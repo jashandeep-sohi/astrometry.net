@@ -42,12 +42,12 @@ RUN for x in \
     astropy \
     ; do pip3 install --no-cache-dir $x; done
 
-RUN mkdir /src
 WORKDIR /src
 
 # Astrometry.net
-RUN git clone http://github.com/dstndstn/astrometry.net.git astrometry \
-    && cd astrometry \
+COPY ./ ./astrometry
+
+RUN cd astrometry \
     && make \
     && make py \
     && make extra \
@@ -57,4 +57,6 @@ RUN git clone http://github.com/dstndstn/astrometry.net.git astrometry \
 # python = python3
 RUN ln -s /usr/bin/python3 /usr/bin/python
 ENV PYTHONPATH=/usr/local/lib/python
+ENV PYTHONUNBUFFERED=yes
 
+ENTRYPOINT ["/usr/local/bin/solve-field"]
